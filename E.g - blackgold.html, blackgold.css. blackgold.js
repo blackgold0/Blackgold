@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Booking - BlackGold</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.8rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #f39c12;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .service-img {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .service-info {
+            padding: 1.5rem;
+        }
+        
+        .service-info h3 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .service-info p {
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+        
+        .service-info .price {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #f39c12;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .booking-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-btn {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .payment-methods {
+            margin: 1.5rem 0;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .payment-method:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .payment-method input {
+            margin-right: 1rem;
+            width: auto;
+        }
+        
+        .payment-method .payment-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 1rem;
+            object-fit: contain;
+        }
+        
+        .payment-method .payment-info {
+            flex-grow: 1;
+        }
+        
+        .payment-method .payment-info h4 {
+            margin-bottom: 0.2rem;
+        }
+        
+        .payment-method .payment-info p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .about-section {
+            padding: 3rem 0;
+            background-color: white;
+            margin-top: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .about-section h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .about-section p {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 0.8rem;
+            }
+            
+            .services {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">BlackGold</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container" id="home">
+        <h2>Our Services</h2>
+        <p>Book professional services with easy payment options</p>
+        
+        <div class="services" id="services">
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://via.placeholder.com/300x200?text=Home+Cleaning');"></div>
+                <div class="service-info">
+                    <h3>Home Cleaning</h3>
+                    <p>Professional cleaning service for your home</p>
+                    <span class="price">৳1,500</span>
+                    <button class="btn book-btn" data-service="Home Cleaning" data-price="1500">Book Now</button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://via.placeholder.com/300x200?text=AC+Repair');"></div>
+                <div class="service-info">
+                    <h3>AC Repair</h3>
+                    <p>Expert AC repair and maintenance</p>
+                    <span class="price">৳2,500</span>
+                    <button class="btn book-btn" data-service="AC Repair" data-price="2500">Book Now</button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://via.placeholder.com/300x200?text=Plumbing');"></div>
+                <div class="service-info">
+                    <h3>Plumbing Service</h3>
+                    <p>Fix all your plumbing issues</p>
+                    <span class="price">৳1,800</span>
+                    <button class="btn book-btn" data-service="Plumbing Service" data-price="1800">Book Now</button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://via.placeholder.com/300x200?text=Electrician');"></div>
+                <div class="service-info">
+                    <h3>Electrician</h3>
+                    <p>Electrical wiring and repair services</p>
+                    <span class="price">৳2,000</span>
+                    <button class="btn book-btn" data-service="Electrician" data-price="2000">Book Now</button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://via.placeholder.com/300x200?text=Moving');"></div>
+                <div class="service-info">
+                    <h3>Moving Service</h3>
+                    <p>Relocation and shifting assistance</p>
+                    <span class="price">৳5,000</span>
+                    <button class="btn book-btn" data-service="Moving Service" data-price="5000">Book Now</button>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://via.placeholder.com/300x200?text=Carpenter');"></div>
+                <div class="service-info">
+                    <h3>Carpentry</h3>
+                    <p>Furniture repair and wood works</p>
+                    <span class="price">৳3,000</span>
+                    <button class="btn book-btn" data-service="Carpentry" data-price="3000">Book Now</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="about-section" id="about">
+            <h2>About BlackGold</h2>
+            <p>BlackGold is a premier service provider in Bangladesh, offering top-quality home services with professional technicians. We are committed to making your life easier by providing reliable and affordable solutions for all your home maintenance needs.</p>
+            <p>Our team consists of experienced professionals who are dedicated to delivering excellent service with a focus on customer satisfaction.</p>
+        </div>
+        
+        <div class="contact-section" id="contact">
+            <h2>Contact Us</h2>
+            <p>Have questions or need assistance? Reach out to us anytime!</p>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Book Service</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="serviceName">Service</label>
+                    <input type="text" id="serviceName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="customerName">Your Name</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Phone Number</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress">Address</label>
+                    <textarea id="customerAddress" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="bookingDate">Preferred Date</label>
+                    <input type="date" id="bookingDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookingTime">Preferred Time</label>
+                    <input type="time" id="bookingTime" required>
+                </div>
+                
+                <h3>Payment Method</h3>
+                <div class="payment-methods">
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="bkash" checked>
+                        <img src="https://via.placeholder.com/40x40?text=bKash" alt="bKash" class="payment-icon">
+                        <div class="payment-info">
+                            <h4>bKash</h4>
+                            <p>Pay via bKash mobile payment</p>
+                        </div>
+                    </label>
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="nagad">
+                        <img src="https://via.placeholder.com/40x40?text=Nagad" alt="Nagad" class="payment-icon">
+                        <div class="payment-info">
+                            <h4>Nagad</h4>
+                            <p>Pay via Nagad mobile payment</p>
+                        </div>
+                    </label>
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="rocket">
+                        <img src="https://via.placeholder.com/40x40?text=Rocket" alt="Rocket" class="payment-icon">
+                        <div class="payment-info">
+                            <h4>Rocket</h4>
+                            <p>Pay via DBBL Rocket</p>
+                        </div>
+                    </label>
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="cash">
+                        <img src="https://via.placeholder.com/40x40?text=Cash" alt="Cash" class="payment-icon">
+                        <div class="payment-info">
+                            <h4>Cash on Service</h4>
+                            <p>Pay after service completion</p>
+                        </div>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 BlackGold. All rights reserved.</p>
+        <p>Contact: mdalaminblackgold@gmail.com | Phone: 01846682052</p>
+        <p>Dhaka, Bangladesh</p>
+    </footer>
+
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('bookingModal');
+        const bookButtons = document.querySelectorAll('.book-btn');
+        const closeBtn = document.querySelector('.close-btn');
+        const serviceNameInput = document.getElementById('serviceName');
+        
+        bookButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const service = button.getAttribute('data-service');
+                const price = button.getAttribute('data-price');
+                serviceNameInput.value = `${service} (৳${price})`;
+                modal.style.display = 'flex';
+            });
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Form submission
+        const bookingForm = document.getElementById('bookingForm');
+        bookingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Booking request submitted successfully! We will contact you shortly.');
+            modal.style.display = 'none';
+            bookingForm.reset();
+        });
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
